@@ -39,7 +39,7 @@ var Terminal = React.createClass({
                     }
                 </TerminalStyle>
                 <TerminalInputStyle style={this.props.style}>
-                    <TerminalInput style={this.props.style} />
+                    <TerminalInput style={this.props.style} ps1={this.props.ps1} />
                 </TerminalInputStyle>
             </div>
         );

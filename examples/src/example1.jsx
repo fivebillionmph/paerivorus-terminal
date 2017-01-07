@@ -12,7 +12,7 @@ var Content = React.createClass({
     render: function() {
         return (
             <div style={style}>
-                <Terminal />
+                <Terminal ps1={"$"}/>
             </div>
         );
     }

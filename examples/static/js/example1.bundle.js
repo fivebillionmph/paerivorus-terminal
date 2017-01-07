@@ -75,7 +75,7 @@
 	        return _react2.default.createElement(
 	            "div",
 	            { style: style },
-	            _react2.default.createElement(_index2.default, null)
+	            _react2.default.createElement(_index2.default, { ps1: ">" })
 	        );
 	    }
 	});
@@ -22171,7 +22171,7 @@
 	            _react2.default.createElement(
 	                _terminalInputStyle2.default,
 	                { style: this.props.style },
-	                _react2.default.createElement(_terminalInput2.default, { style: this.props.style })
+	                _react2.default.createElement(_terminalInput2.default, { style: this.props.style, ps1: this.props.ps1 })
 	            )
 	        );
 	    }
@@ -22347,6 +22347,8 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _helper = __webpack_require__(/*! ./helper.js */ 181);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var TerminalInputStyle = _react2.default.createClass({
@@ -22361,6 +22363,7 @@
 	                boxSizing: "border-box"
 	            }
 	        };
+	        style.parent = (0, _helper.userStyle)(style.parent, this.props.style);
 	
 	        return _react2.default.createElement(
 	            "div",
@@ -22389,11 +22392,36 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _helper = __webpack_require__(/*! ./helper.js */ 181);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var TerminalInput = _react2.default.createClass({
 	    displayName: "TerminalInput",
 	
+	    getInitialState: function getInitialState() {
+	        var value = "";
+	        if (this.props.ps1) {
+	            value = this.props.ps1 + " ";
+	        }
+	        return { value: value };
+	    },
+	    _onChange: function _onChange(e) {
+	        var newValue = e.target.value;
+	        if (this.props.ps1) {
+	            if (newValue == "") {
+	                newValue = this.props.ps1 + " ";
+	            } else if (newValue == this.props.ps1) {
+	                newValue += " ";
+	            } else if (!newValue.startsWith(this.props.ps1 + " ")) {
+	                newValue = this.props.ps1 + " " + newValue;
+	            }
+	        }
+	        this.setState({ value: newValue });
+	    },
+	    getValue: function getValue() {
+	        return this.state.value;
+	    },
 	    render: function render() {
 	        var style = {
 	            parent: {
@@ -22409,8 +22437,9 @@
 	                boxSizing: "border-box"
 	            }
 	        };
+	        style.parent = (0, _helper.userStyle)(style.parent, this.props.style);
 	
-	        return _react2.default.createElement("input", { style: style.parent });
+	        return _react2.default.createElement("input", { value: this.state.value, onChange: this._onChange, style: style.parent });
 	    }
 	});
 	

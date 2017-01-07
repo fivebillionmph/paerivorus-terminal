@@ -1,5 +1,7 @@
 import React from "react";
 
+import { userStyle} from "./helper.js";
+
 var TerminalInputStyle = React.createClass({
     render: function() {
         var style = {
@@ -10,6 +12,7 @@ var TerminalInputStyle = React.createClass({
                 boxSizing: "border-box"
             }
         };
+        style.parent = userStyle(style.parent, this.props.style);
 
         return (
             <div style={style.parent}>
