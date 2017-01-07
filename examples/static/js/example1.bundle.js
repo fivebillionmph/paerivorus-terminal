@@ -63,11 +63,20 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var style = {
+	    height: "800px",
+	    width: "500px"
+	};
+	
 	var Content = _react2.default.createClass({
 	    displayName: "Content",
 	
 	    render: function render() {
-	        return _react2.default.createElement(_index2.default, null);
+	        return _react2.default.createElement(
+	            "div",
+	            { style: style },
+	            _react2.default.createElement(_index2.default, null)
+	        );
 	    }
 	});
 	
@@ -22103,11 +22112,31 @@
 	
 	var _terminalStyle2 = _interopRequireDefault(_terminalStyle);
 	
-	var _line = __webpack_require__(/*! ./line.jsx */ 181);
+	var _line = __webpack_require__(/*! ./line.jsx */ 182);
 	
 	var _line2 = _interopRequireDefault(_line);
 	
+	var _lineStyle = __webpack_require__(/*! ./line-style.jsx */ 183);
+	
+	var _lineStyle2 = _interopRequireDefault(_lineStyle);
+	
+	var _terminalInputStyle = __webpack_require__(/*! ./terminal-input-style.jsx */ 184);
+	
+	var _terminalInputStyle2 = _interopRequireDefault(_terminalInputStyle);
+	
+	var _terminalInput = __webpack_require__(/*! ./terminal-input.jsx */ 185);
+	
+	var _terminalInput2 = _interopRequireDefault(_terminalInput);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var style = {
+	    parent: {
+	        height: "100%",
+	        width: "100%",
+	        display: "inline-block"
+	    }
+	};
 	
 	var Terminal = _react2.default.createClass({
 	    displayName: "Terminal",
@@ -22121,16 +22150,29 @@
 	        var that = this;
 	
 	        return _react2.default.createElement(
-	            _terminalStyle2.default,
-	            { style: this.props.style },
-	            this.state.textLines.map(function (text, idx) {
-	                return _react2.default.createElement(
-	                    "span",
-	                    { key: "line" + idx },
-	                    _react2.default.createElement(_line2.default, { text: text, style: that.props.style }),
-	                    _react2.default.createElement("br", null)
-	                );
-	            })
+	            "div",
+	            { style: style.parent },
+	            _react2.default.createElement(
+	                _terminalStyle2.default,
+	                { style: this.props.style },
+	                this.state.textLines.map(function (text, idx) {
+	                    return _react2.default.createElement(
+	                        "span",
+	                        { key: "line" + idx },
+	                        _react2.default.createElement(
+	                            _lineStyle2.default,
+	                            { style: that.props.style },
+	                            _react2.default.createElement(_line2.default, { text: text }),
+	                            _react2.default.createElement("br", null)
+	                        )
+	                    );
+	                })
+	            ),
+	            _react2.default.createElement(
+	                _terminalInputStyle2.default,
+	                { style: this.props.style },
+	                _react2.default.createElement(_terminalInput2.default, { style: this.props.style })
+	            )
 	        );
 	    }
 	});
@@ -22154,6 +22196,8 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _helper = __webpack_require__(/*! ./helper.js */ 181);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var TerminalStyle = _react2.default.createClass({
@@ -22163,14 +22207,15 @@
 	        var style = {
 	            parent: {
 	                width: "100%",
-	                height: "800px",
 	                overflow: "scroll",
-	                backgroundColor: "#071404"
+	                backgroundColor: "#071404",
+	                margin: "0px",
+	                boxSizing: "border-box",
+	                display: "block",
+	                height: "90%"
 	            }
 	        };
-	        if (this.props.style && this.props.style.width) style.parent.width = this.props.style.width;
-	        if (this.props.style && this.props.style.height) style.parent.height = this.props.style.height;
-	        if (this.props.style && this.props.style.backgroundColor) style.parent.backgroundColor = this.props.style.backgroundColor;
+	        style.parent = (0, _helper.userStyle)(style.parent, this.props.style);
 	
 	        return _react2.default.createElement(
 	            "div",
@@ -22184,6 +22229,30 @@
 
 /***/ },
 /* 181 */
+/*!***********************!*\
+  !*** ./src/helper.js ***!
+  \***********************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	function userStyle(style, userStyle) {
+	    if (!userStyle) return style;
+	    for (var prop in style) {
+	        if (userStyle.hasOwnProperty(prop)) {
+	            style[prop] = userStyle[prop];
+	        }
+	    }
+	    return style;
+	}
+	
+	exports.userStyle = userStyle;
+
+/***/ },
+/* 182 */
 /*!**********************!*\
   !*** ./src/line.jsx ***!
   \**********************/
@@ -22214,6 +22283,138 @@
 	});
 	
 	exports.default = Line;
+
+/***/ },
+/* 183 */
+/*!****************************!*\
+  !*** ./src/line-style.jsx ***!
+  \****************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _helper = __webpack_require__(/*! ./helper.js */ 181);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var LineStyle = _react2.default.createClass({
+	    displayName: "LineStyle",
+	
+	    render: function render() {
+	        var style = {
+	            parent: {
+	                fontFamily: "Courier New, Courier, Lucida Console, Consolas, Monaco",
+	                color: "#ffa500",
+	                marginLeft: "10px",
+	                marginTop: "5px",
+	                marginBottom: "5px"
+	            }
+	        };
+	        style.parent = (0, _helper.userStyle)(style.parent, this.props.style);
+	
+	        return _react2.default.createElement(
+	            "span",
+	            { style: style.parent },
+	            this.props.children
+	        );
+	    }
+	});
+	
+	exports.default = LineStyle;
+
+/***/ },
+/* 184 */
+/*!**************************************!*\
+  !*** ./src/terminal-input-style.jsx ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var TerminalInputStyle = _react2.default.createClass({
+	    displayName: "TerminalInputStyle",
+	
+	    render: function render() {
+	        var style = {
+	            parent: {
+	                display: "block",
+	                width: "100%",
+	                backgroundColor: "#071404",
+	                boxSizing: "border-box"
+	            }
+	        };
+	
+	        return _react2.default.createElement(
+	            "div",
+	            { style: style.parent },
+	            this.props.children
+	        );
+	    }
+	});
+	
+	exports.default = TerminalInputStyle;
+
+/***/ },
+/* 185 */
+/*!********************************!*\
+  !*** ./src/terminal-input.jsx ***!
+  \********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var TerminalInput = _react2.default.createClass({
+	    displayName: "TerminalInput",
+	
+	    render: function render() {
+	        var style = {
+	            parent: {
+	                fontFamily: "Courier New, Courier, Lucida Console, Consolas, Monaco",
+	                border: "none",
+	                backgroundColor: "#071404",
+	                color: "#ffa500",
+	                outline: "none",
+	                width: "100%",
+	                borderWidth: "0px",
+	                fontSize: "14px",
+	                paddingLeft: "10px",
+	                boxSizing: "border-box"
+	            }
+	        };
+	
+	        return _react2.default.createElement("input", { style: style.parent });
+	    }
+	});
+	
+	exports.default = TerminalInput;
 
 /***/ }
 /******/ ]);

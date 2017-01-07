@@ -3,10 +3,17 @@ import ReactDOM from "react-dom";
 
 import Terminal from "../../index.js";
 
+const style = {
+    height: "800px",
+    width: "500px"
+};
+
 var Content = React.createClass({
     render: function() {
         return (
-            <Terminal />
+            <div style={style}>
+                <Terminal />
+            </div>
         );
     }
 });

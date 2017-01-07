@@ -1,18 +1,21 @@
 import React from "react";
 
+import { userStyle } from "./helper.js";
+
 var TerminalStyle = React.createClass({
     render: function() {
         var style = {
             parent: {
                 width: "100%",
-                height: "800px",
                 overflow: "scroll",
                 backgroundColor: "#071404",
+                margin: "0px",
+                boxSizing: "border-box",
+                display: "block",
+                height: "90%"
             }
         };
-        if(this.props.style && this.props.style.width) style.parent.width = this.props.style.width;
-        if(this.props.style && this.props.style.height) style.parent.height = this.props.style.height;
-        if(this.props.style && this.props.style.backgroundColor) style.parent.backgroundColor = this.props.style.backgroundColor;
+        style.parent = userStyle(style.parent, this.props.style);
 
         return (
             <div style={style.parent}>
