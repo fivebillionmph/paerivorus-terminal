@@ -22099,21 +22099,121 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _terminalStyle = __webpack_require__(/*! ./terminal-style.jsx */ 180);
+	
+	var _terminalStyle2 = _interopRequireDefault(_terminalStyle);
+	
+	var _line = __webpack_require__(/*! ./line.jsx */ 181);
+	
+	var _line2 = _interopRequireDefault(_line);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Terminal = _react2.default.createClass({
 	    displayName: "Terminal",
 	
+	    getInitialState: function getInitialState() {
+	        return {
+	            textLines: ['test', '123']
+	        };
+	    },
 	    render: function render() {
+	        var that = this;
+	
 	        return _react2.default.createElement(
-	            "div",
-	            null,
-	            "Terminal"
+	            _terminalStyle2.default,
+	            { style: this.props.style },
+	            this.state.textLines.map(function (text, idx) {
+	                return _react2.default.createElement(
+	                    "span",
+	                    { key: "line" + idx },
+	                    _react2.default.createElement(_line2.default, { text: text, style: that.props.style }),
+	                    _react2.default.createElement("br", null)
+	                );
+	            })
 	        );
 	    }
 	});
 	
 	exports.default = Terminal;
+
+/***/ },
+/* 180 */
+/*!********************************!*\
+  !*** ./src/terminal-style.jsx ***!
+  \********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var TerminalStyle = _react2.default.createClass({
+	    displayName: "TerminalStyle",
+	
+	    render: function render() {
+	        var style = {
+	            parent: {
+	                width: "100%",
+	                height: "800px",
+	                overflow: "scroll",
+	                backgroundColor: "#071404"
+	            }
+	        };
+	        if (this.props.style && this.props.style.width) style.parent.width = this.props.style.width;
+	        if (this.props.style && this.props.style.height) style.parent.height = this.props.style.height;
+	        if (this.props.style && this.props.style.backgroundColor) style.parent.backgroundColor = this.props.style.backgroundColor;
+	
+	        return _react2.default.createElement(
+	            "div",
+	            { style: style.parent },
+	            this.props.children
+	        );
+	    }
+	});
+	
+	exports.default = TerminalStyle;
+
+/***/ },
+/* 181 */
+/*!**********************!*\
+  !*** ./src/line.jsx ***!
+  \**********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Line = _react2.default.createClass({
+	    displayName: "Line",
+	
+	    render: function render() {
+	        return _react2.default.createElement(
+	            "span",
+	            null,
+	            this.props.text
+	        );
+	    }
+	});
+	
+	exports.default = Line;
 
 /***/ }
 /******/ ]);
