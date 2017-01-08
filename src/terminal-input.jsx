@@ -11,7 +11,16 @@ var TerminalInput = React.createClass({
         return {value: value};
     },
     componentWillReceiveProps(nextprops) {
-        // change ps1
+        if(nextprops.ps1 != this.props.ps1) {
+            var value = this.state.value;
+            if(this.props.ps1) {
+                value = value.replace(this.props.ps1 + " ", "");
+            }
+            if(nextprops.ps1) {
+                value = nextprops.ps1 + " " + value;
+            }
+            this.setState({value: value});
+        }
     },
     _onChange: function(e) {
         var newValue = e.target.value;
@@ -31,7 +40,19 @@ var TerminalInput = React.createClass({
         value = value.replace(this.props.ps1 + " ", "");
         return value;
     },
+    clearValue: function() {
+        var value = "";
+        if(this.props.ps1) {
+            value = this.props.ps1 + " " + value;
+        }
+        this.setState({value: value});
+    },
+    focus: function() {
+        this._input.focus();
+    },
     render: function() {
+        var that = this;
+
         var style = {
             parent: {
                 fontFamily: "Courier New, Courier, Lucida Console, Consolas, Monaco",
@@ -49,7 +70,7 @@ var TerminalInput = React.createClass({
         style.parent = userStyle(style.parent, this.props.style);
 
         return (
-            <input value={this.state.value} onChange={this._onChange} style={style.parent} />
+            <input value={this.state.value} onChange={this._onChange} style={style.parent} ref={function(el) { that._input = el; }} />
         );
     }
 });

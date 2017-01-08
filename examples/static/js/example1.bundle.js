@@ -75,7 +75,7 @@
 	        return _react2.default.createElement(
 	            "div",
 	            { style: style },
-	            _react2.default.createElement(_index2.default, { ps1: ">" })
+	            _react2.default.createElement(_index2.default, { ps1: "$" })
 	        );
 	    }
 	});
@@ -22143,18 +22143,54 @@
 	
 	    getInitialState: function getInitialState() {
 	        return {
-	            textLines: ['test', '123']
+	            textLines: []
 	        };
+	    },
+	    getDefaultProps: function getDefaultProps() {
+	        return {
+	            maxLines: 50
+	        };
+	    },
+	    componentDidUpdate: function componentDidUpdate() {
+	        this._scrollToBottom();
+	    },
+	    _onClick: function _onClick() {
+	        this._input.focus();
+	    },
+	    _onKeyDown: function _onKeyDown(e) {
+	        if (e.key === "Enter") {
+	            var value = this._input.getValue();
+	            var originalValue = value;
+	            if (this.props.ps1) {
+	                value = this.props.ps1 + " " + value;
+	            }
+	            this._input.clearValue();
+	            var lines = this.state.textLines;
+	            lines.push(value);
+	            var infiniteCounter = 0; // prevent infinite loop
+	            while (lines.length > this.props.maxLines) {
+	                infiniteCounter++;
+	                lines.shift();
+	                if (infiniteCounter > 100) break;
+	            }
+	            this.setState({ textLines: lines });
+	        }
+	        this._scrollToBottom();
+	    },
+	    _scrollToBottom: function _scrollToBottom() {
+	        this._bottomLine.scrollIntoView();
 	    },
 	    render: function render() {
 	        var that = this;
 	
 	        return _react2.default.createElement(
 	            "div",
-	            { style: style.parent },
+	            { style: style.parent, onClick: this._onClick, onKeyDown: this._onKeyDown },
 	            _react2.default.createElement(
 	                _terminalStyle2.default,
-	                { style: this.props.style },
+	                { style: this.props.style, ref: function ref(el) {
+	                        that._terminalWrapper = el;
+	                    } },
 	                this.state.textLines.map(function (text, idx) {
 	                    return _react2.default.createElement(
 	                        "span",
@@ -22166,12 +22202,17 @@
 	                            _react2.default.createElement("br", null)
 	                        )
 	                    );
-	                })
+	                }),
+	                _react2.default.createElement("span", { ref: function ref(el) {
+	                        that._bottomLine = el;
+	                    } })
 	            ),
 	            _react2.default.createElement(
 	                _terminalInputStyle2.default,
 	                { style: this.props.style },
-	                _react2.default.createElement(_terminalInput2.default, { style: this.props.style, ps1: this.props.ps1 })
+	                _react2.default.createElement(_terminalInput2.default, { style: this.props.style, ps1: this.props.ps1, ref: function ref(el) {
+	                        that._input = el;
+	                    } })
 	            )
 	        );
 	    }
@@ -22204,6 +22245,8 @@
 	    displayName: "TerminalStyle",
 	
 	    render: function render() {
+	        var that = this;
+	
 	        var style = {
 	            parent: {
 	                width: "100%",
@@ -22219,7 +22262,9 @@
 	
 	        return _react2.default.createElement(
 	            "div",
-	            { style: style.parent },
+	            { style: style.parent, ref: function ref(el) {
+	                    that._parent = el;
+	                } },
 	            this.props.children
 	        );
 	    }
@@ -22406,6 +22451,20 @@
 	        }
 	        return { value: value };
 	    },
+	    componentWillReceiveProps: function componentWillReceiveProps(nextprops) {
+	        if (nextprops.ps1 != this.props.ps1) {
+	            var value = this.state.value;
+	            if (this.props.ps1) {
+	                value = value.replace(this.props.ps1 + " ", "");
+	            }
+	            if (nextprops.ps1) {
+	                value = nextprops.ps1 + " " + value;
+	            }
+	            this.setState({ value: value });
+	        }
+	    },
+	
+	    componentDidUpdate: function componentDidUpdate() {},
 	    _onChange: function _onChange(e) {
 	        var newValue = e.target.value;
 	        if (this.props.ps1) {
@@ -22420,9 +22479,23 @@
 	        this.setState({ value: newValue });
 	    },
 	    getValue: function getValue() {
-	        return this.state.value;
+	        var value = this.state.value;
+	        value = value.replace(this.props.ps1 + " ", "");
+	        return value;
+	    },
+	    clearValue: function clearValue() {
+	        var value = "";
+	        if (this.props.ps1) {
+	            value = this.props.ps1 + " " + value;
+	        }
+	        this.setState({ value: value });
+	    },
+	    focus: function focus() {
+	        this._input.focus();
 	    },
 	    render: function render() {
+	        var that = this;
+	
 	        var style = {
 	            parent: {
 	                fontFamily: "Courier New, Courier, Lucida Console, Consolas, Monaco",
@@ -22439,7 +22512,9 @@
 	        };
 	        style.parent = (0, _helper.userStyle)(style.parent, this.props.style);
 	
-	        return _react2.default.createElement("input", { value: this.state.value, onChange: this._onChange, style: style.parent });
+	        return _react2.default.createElement("input", { value: this.state.value, onChange: this._onChange, style: style.parent, ref: function ref(el) {
+	                that._input = el;
+	            } });
 	    }
 	});
 	

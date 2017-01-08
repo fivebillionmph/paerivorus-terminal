@@ -4,6 +4,8 @@ import { userStyle } from "./helper.js";
 
 var TerminalStyle = React.createClass({
     render: function() {
+        var that = this;
+
         var style = {
             parent: {
                 width: "100%",
@@ -18,7 +20,7 @@ var TerminalStyle = React.createClass({
         style.parent = userStyle(style.parent, this.props.style);
 
         return (
-            <div style={style.parent}>
+            <div style={style.parent} ref={function(el) { that._parent = el; }}>
                 {this.props.children}
             </div>
         );
