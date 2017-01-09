@@ -6,6 +6,8 @@ import LineStyle from "./line-style.jsx";
 import TerminalInputStyle from "./terminal-input-style.jsx";
 import TerminalInput from "./terminal-input.jsx";
 
+import { maxArrayLengthFront } from "./helper.js";
+
 const style = {
     parent: {
         height: "100%",
@@ -17,12 +19,16 @@ const style = {
 var Terminal = React.createClass({
     getInitialState: function() {
         return {
-            textLines: []
+            textLines: [],
+            commandLines: [],
+            previousCommandOffset: 1,
+            currentCommand: ""
         };
     },
     getDefaultProps: function() {
         return {
-            maxLines: 50
+            maxLines: 50,
+            maxSavedCommands: 50
         };
     },
     componentDidUpdate: function() {
@@ -33,22 +39,37 @@ var Terminal = React.createClass({
     },
     _onKeyDown: function(e) {
         if(e.key === "Enter") {
+            /* get the values */
             var value = this._input.getValue();
             var originalValue = value;
+
+            /* add the ps1 */
             if(this.props.ps1) {
                 value = this.props.ps1 + " " + value;
             }
+
+            /* clear the input box */
             this._input.clearValue();
+
+            /* add value to text lines */
             var lines = this.state.textLines;
             lines.push(value);
-            var infiniteCounter = 0;    // prevent infinite loop
-            while(lines.length > this.props.maxLines) {
-                infiniteCounter++;
-                lines.shift();
-                if(infiniteCounter > 100) break;
-            }
-            this.setState({textLines: lines});
-        }
+            maxArrayLengthFront(lines, this.props.maxLines);
+
+            /* add value to commands array */
+            var commands = this.state.commandLines;
+            commands.push(originalValue);
+            maxArrayLengthFront(commands, this.props.maxSavedCommands);
+
+            this.setState({textLines: lines, commandLines: commands});
+        }// else if(e.key === "ArrowUp" || e.key === "ArrowDown") {
+         //   var change = -1;
+         //   if(e.key === "ArrowDown") change = 1;
+
+         //   var previousCommandOffset = this.state.previousCommandOffset;
+         //   if(previousCommandOffset === -1 && change === -1) return;
+         //   if(previousCommandOffset === >=
+        //}
         this._scrollToBottom();
     },
     _scrollToBottom: function() {

@@ -35,10 +35,25 @@ var TerminalInput = React.createClass({
         }
         this.setState({value: newValue});
     },
+    _onSelect: function() {
+        if(this.props.ps1) {
+            var selectionStart = this._input.selectionStart;
+            if(selectionStart <= this.props.ps1.length) {
+                this._input.selectionStart = this.props.ps1.length + 1;
+            }
+        }
+    },
     getValue: function() {
         var value = this.state.value;
         value = value.replace(this.props.ps1 + " ", "");
         return value;
+    },
+    setValue: function(val) {
+        var newValue = val;
+        if(this.props.ps1) {
+            newValue = this.props.ps1 + " " + newValue;
+        }
+        this.setState({value: newValue});
     },
     clearValue: function() {
         var value = "";
@@ -54,7 +69,7 @@ var TerminalInput = React.createClass({
         var that = this;
 
         var style = {
-            parent: {
+            input: {
                 fontFamily: "Courier New, Courier, Lucida Console, Consolas, Monaco",
                 border: "none",
                 backgroundColor: "#071404",
@@ -67,10 +82,12 @@ var TerminalInput = React.createClass({
                 boxSizing: "border-box"
             }
         };
-        style.parent = userStyle(style.parent, this.props.style);
+        style.input = userStyle(style.input, this.props.style);
 
         return (
-            <input value={this.state.value} onChange={this._onChange} style={style.parent} ref={function(el) { that._input = el; }} />
+            <span>
+                <input onSelect={this._onSelect} value={this.state.value} onChange={this._onChange} style={style.input} ref={function(el) { that._input = el; }} />
+            </span>
         );
     }
 });

@@ -8,4 +8,17 @@ function userStyle(style, userStyle) {
     return style;
 }
 
-export { userStyle };
+function maxArrayLengthFront(array, max) {
+    var infiniteCounter = 0;    // prevent infinite loop
+    while(array.length > max) {
+        array.shift();
+        infiniteCounter++;
+        if(infiniteCounter > 100) break;
+    }
+    return array;
+}
+
+export {
+    userStyle,
+    maxArrayLengthFront
+};

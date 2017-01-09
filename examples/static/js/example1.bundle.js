@@ -22128,6 +22128,8 @@
 	
 	var _terminalInput2 = _interopRequireDefault(_terminalInput);
 	
+	var _helper = __webpack_require__(/*! ./helper.js */ 181);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var style = {
@@ -22143,12 +22145,16 @@
 	
 	    getInitialState: function getInitialState() {
 	        return {
-	            textLines: []
+	            textLines: [],
+	            commandLines: [],
+	            previousCommandOffset: 1,
+	            currentCommand: ""
 	        };
 	    },
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            maxLines: 50
+	            maxLines: 50,
+	            maxSavedCommands: 50
 	        };
 	    },
 	    componentDidUpdate: function componentDidUpdate() {
@@ -22159,22 +22165,37 @@
 	    },
 	    _onKeyDown: function _onKeyDown(e) {
 	        if (e.key === "Enter") {
+	            /* get the values */
 	            var value = this._input.getValue();
 	            var originalValue = value;
+	
+	            /* add the ps1 */
 	            if (this.props.ps1) {
 	                value = this.props.ps1 + " " + value;
 	            }
+	
+	            /* clear the input box */
 	            this._input.clearValue();
+	
+	            /* add value to text lines */
 	            var lines = this.state.textLines;
 	            lines.push(value);
-	            var infiniteCounter = 0; // prevent infinite loop
-	            while (lines.length > this.props.maxLines) {
-	                infiniteCounter++;
-	                lines.shift();
-	                if (infiniteCounter > 100) break;
-	            }
-	            this.setState({ textLines: lines });
-	        }
+	            (0, _helper.maxArrayLengthFront)(lines, this.props.maxLines);
+	
+	            /* add value to commands array */
+	            var commands = this.state.commandLines;
+	            commands.push(originalValue);
+	            (0, _helper.maxArrayLengthFront)(commands, this.props.maxSavedCommands);
+	
+	            this.setState({ textLines: lines, commandLines: commands });
+	        } // else if(e.key === "ArrowUp" || e.key === "ArrowDown") {
+	        //   var change = -1;
+	        //   if(e.key === "ArrowDown") change = 1;
+	
+	        //   var previousCommandOffset = this.state.previousCommandOffset;
+	        //   if(previousCommandOffset === -1 && change === -1) return;
+	        //   if(previousCommandOffset === >=
+	        //}
 	        this._scrollToBottom();
 	    },
 	    _scrollToBottom: function _scrollToBottom() {
@@ -22294,7 +22315,18 @@
 	    return style;
 	}
 	
+	function maxArrayLengthFront(array, max) {
+	    var infiniteCounter = 0; // prevent infinite loop
+	    while (array.length > max) {
+	        array.shift();
+	        infiniteCounter++;
+	        if (infiniteCounter > 100) break;
+	    }
+	    return array;
+	}
+	
 	exports.userStyle = userStyle;
+	exports.maxArrayLengthFront = maxArrayLengthFront;
 
 /***/ },
 /* 182 */
@@ -22464,7 +22496,6 @@
 	        }
 	    },
 	
-	    componentDidUpdate: function componentDidUpdate() {},
 	    _onChange: function _onChange(e) {
 	        var newValue = e.target.value;
 	        if (this.props.ps1) {
@@ -22478,11 +22509,20 @@
 	        }
 	        this.setState({ value: newValue });
 	    },
+	    _onSelect: function _onSelect() {
+	        if (this.props.ps1) {
+	            var selectionStart = this._input.selectionStart;
+	            if (selectionStart <= this.props.ps1.length) {
+	                this._input.selectionStart = this.props.ps1.length + 1;
+	            }
+	        }
+	    },
 	    getValue: function getValue() {
 	        var value = this.state.value;
 	        value = value.replace(this.props.ps1 + " ", "");
 	        return value;
 	    },
+	    setValue: function setValue(val) {},
 	    clearValue: function clearValue() {
 	        var value = "";
 	        if (this.props.ps1) {
@@ -22497,7 +22537,7 @@
 	        var that = this;
 	
 	        var style = {
-	            parent: {
+	            input: {
 	                fontFamily: "Courier New, Courier, Lucida Console, Consolas, Monaco",
 	                border: "none",
 	                backgroundColor: "#071404",
@@ -22510,11 +22550,15 @@
 	                boxSizing: "border-box"
 	            }
 	        };
-	        style.parent = (0, _helper.userStyle)(style.parent, this.props.style);
+	        style.input = (0, _helper.userStyle)(style.input, this.props.style);
 	
-	        return _react2.default.createElement("input", { value: this.state.value, onChange: this._onChange, style: style.parent, ref: function ref(el) {
-	                that._input = el;
-	            } });
+	        return _react2.default.createElement(
+	            "span",
+	            null,
+	            _react2.default.createElement("input", { onSelect: this._onSelect, value: this.state.value, onChange: this._onChange, style: style.input, ref: function ref(el) {
+	                    that._input = el;
+	                } })
+	        );
 	    }
 	});
 	
