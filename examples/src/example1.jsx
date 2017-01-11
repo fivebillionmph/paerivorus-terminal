@@ -9,10 +9,13 @@ const style = {
 };
 
 var Content = React.createClass({
+    _terminalCommand: function(value) {
+        console.log(value);
+    },
     render: function() {
         return (
             <div style={style}>
-                <Terminal ps1={"$"}/>
+                <Terminal ps1={"$"} tabComplete={["run", "values", "vals", "test"]} clearString={"clear"} commandFun={this._terminalCommand}/>
             </div>
         );
     }

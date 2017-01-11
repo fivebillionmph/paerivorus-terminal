@@ -71,11 +71,14 @@
 	var Content = _react2.default.createClass({
 	    displayName: "Content",
 	
+	    _terminalCommand: function _terminalCommand(value) {
+	        console.log(value);
+	    },
 	    render: function render() {
 	        return _react2.default.createElement(
 	            "div",
 	            { style: style },
-	            _react2.default.createElement(_index2.default, { ps1: "$" })
+	            _react2.default.createElement(_index2.default, { ps1: "$", tabComplete: ["run", "values", "vals", "test"], clearString: "clear", commandFun: this._terminalCommand })
 	        );
 	    }
 	});
@@ -22104,6 +22107,8 @@
 	    value: true
 	});
 	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -22160,17 +22165,22 @@
 	    componentDidUpdate: function componentDidUpdate() {
 	        this._scrollToBottom();
 	    },
-	    _onClick: function _onClick() {
-	        this._input.focus();
+	    addLine: function addLine(line) {
+	        var textLines = this.state.textLines;
+	        textLines.push(line);
+	        this.setState({ textLines: textLines });
 	    },
-	    _onKeyDown: function _onKeyDown(e) {
-	        if (e.key === "Enter") {
-	            var newState = {};
+	    _handleKeyEnter: function _handleKeyEnter(e) {
+	        var newState = {};
 	
-	            /* get the values */
-	            var value = this._input.getValue();
-	            var originalValue = value;
+	        /* get the values */
+	        var value = this._input.getValue();
+	        var originalValue = value;
 	
+	        /* check if needs to clear */
+	        if (originalValue === this.props.clearString) {
+	            newState.textLines = [];
+	        } else {
 	            /* add the ps1 */
 	            if (this.props.ps1) {
 	                value = this.props.ps1 + " " + value;
@@ -22183,64 +22193,102 @@
 	            newState.textLines = this.state.textLines;
 	            newState.textLines.push(value);
 	            (0, _helper.maxArrayLengthFront)(newState.textLines, this.props.maxLines);
+	        }
 	
-	            /* add value to commands array */
-	            var commands = this.state.commandLines;
-	            if ((commands.length === 0 || commands[commands.length - 1] != originalValue) && originalValue != "") {
-	                newState.commandLines = commands;
-	                newState.commandLines.push(originalValue);
-	                (0, _helper.maxArrayLengthFront)(newState.commandLines, this.props.maxSavedCommands);
-	            }
+	        /* add value to commands array */
+	        var commands = this.state.commandLines;
+	        if ((commands.length === 0 || commands[commands.length - 1] != originalValue) && originalValue != "") {
+	            newState.commandLines = commands;
+	            newState.commandLines.push(originalValue);
+	            (0, _helper.maxArrayLengthFront)(newState.commandLines, this.props.maxSavedCommands);
+	        }
 	
-	            /* reset the history */
+	        /* reset the history */
+	        newState.previousCommandOffset = null;
+	
+	        this.setState(newState);
+	
+	        /* send notification to prop function */
+	        if (typeof this.props.commandFun === "function") {
+	            this.props.commandFun(originalValue);
+	        }
+	    },
+	    _handleKeyArrow: function _handleKeyArrow(e) {
+	        e.preventDefault();
+	        var newState = {};
+	
+	        var change = -1;
+	        if (e.key === "ArrowDown") change = 1;
+	
+	        var previousCommandOffset = this.state.previousCommandOffset;
+	        var previousCommands = this.state.commandLines;
+	
+	        /* handle cases where no change should occur */
+	        if (previousCommandOffset === 0 && change === -1) return;
+	        if ((previousCommandOffset >= previousCommands.length || previousCommandOffset === null) && change === 1) return;
+	        if (previousCommands.length === 0) return;
+	
+	        if (previousCommandOffset === null) {
+	            /* if going up from current command, save the current command */
+	            newState.currentCommand = this._input.getValue();
+	
+	            /* newIdx is the last element */
+	            newState.previousCommandOffset = previousCommands.length - 1;
+	
+	            /* update the input */
+	            this._input.setValue(previousCommands[newState.previousCommandOffset]);
+	        } else if (previousCommands.length - 1 === previousCommandOffset && change === 1) {
+	            /* when at the last previous command and user pushed down arrow to go back to current command */
 	            newState.previousCommandOffset = null;
 	
-	            this.setState(newState);
+	            /* update the input */
+	            this._input.setValue(this.state.currentCommand);
+	        } else {
+	            /* change the position */
+	            newState.previousCommandOffset = previousCommandOffset + change;
 	
-	            /* send notification to prop function */
-	            if (typeof this.props.commandFun === "function") {
-	                this.props.commandFun(originalValue);
+	            /* update the input */
+	            this._input.setValue(previousCommands[newState.previousCommandOffset]);
+	        }
+	
+	        /* update the cursor */
+	        this._input.setCursorEnd();
+	
+	        this.setState(newState);
+	    },
+	    _handleKeyTab: function _handleKeyTab(e) {
+	        e.preventDefault();
+	        var currentValue = this._input.getValue();
+	        if (currentValue == "") return;
+	        if (_typeof(this.props.tabComplete) !== "object") return;
+	        var matches = [];
+	        for (var i = 0; i < this.props.tabComplete.length; i++) {
+	            var thisTabComplete = this.props.tabComplete[i];
+	            if (thisTabComplete.startsWith(currentValue)) {
+	                matches.push(thisTabComplete);
 	            }
+	        }
+	        if (matches.length == 0) {
+	            return;
+	        } else if (matches.length == 1) {
+	            this._input.setValue(matches[0] + " ");
+	        } else {
+	            var match = (0, _helper.sharedStart)(matches);
+	            for (var i = 0; i < matches.length; i++) {
+	                this.addLine(matches[i]);
+	            }this._input.setValue(match);
+	        }
+	    },
+	    _onClick: function _onClick() {
+	        this._input.focus();
+	    },
+	    _onKeyDown: function _onKeyDown(e) {
+	        if (e.key === "Enter") {
+	            this._handleKeyEnter(e);
 	        } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-	            var newState = {};
-	
-	            var change = -1;
-	            if (e.key === "ArrowDown") change = 1;
-	
-	            var previousCommandOffset = this.state.previousCommandOffset;
-	            var previousCommands = this.state.commandLines;
-	
-	            /* handle cases where no change should occur */
-	            if (previousCommandOffset === 0 && change === -1) return;
-	            if ((previousCommandOffset >= previousCommands.length || previousCommandOffset === null) && change === 1) return;
-	            if (previousCommands.length === 0) return;
-	
-	            if (previousCommandOffset === null) {
-	                /* if going up from current command, save the current command */
-	                newState.currentCommand = this._input.getValue();
-	
-	                /* newIdx is the last element */
-	                newState.previousCommandOffset = previousCommands.length - 1;
-	
-	                /* update the input */
-	                this._input.setValue(previousCommands[newState.previousCommandOffset]);
-	            } else if (previousCommands.length - 1 === previousCommandOffset && change === 1) {
-	                /* when at the last previous command and user pushed down arrow to go back to current command */
-	                newState.previousCommandOffset = null;
-	
-	                /* update the input */
-	                this._input.setValue(this.state.currentCommand);
-	            } else {
-	                /* change the position */
-	                newState.previousCommandOffset = previousCommandOffset + change;
-	
-	                /* update the input */
-	                this._input.setValue(previousCommands[newState.previousCommandOffset]);
-	            }
-	            this.setState(newState);
+	            this._handleKeyArrow(e);
 	        } else if (e.key === "Tab") {
-	            e.preventDefault();
-	            console.log("tab");
+	            this._handleKeyTab(e);
 	        }
 	        this._scrollToBottom();
 	    },
@@ -22371,8 +22419,21 @@
 	    return array;
 	}
 	
+	function sharedStart(array) {
+	    // from: http://stackoverflow.com/a/1917041
+	    var A = array.concat().sort(),
+	        a1 = A[0],
+	        a2 = A[A.length - 1],
+	        L = a1.length,
+	        i = 0;
+	    while (i < L && a1.charAt(i) === a2.charAt(i)) {
+	        i++;
+	    }return a1.substring(0, i);
+	}
+	
 	exports.userStyle = userStyle;
 	exports.maxArrayLengthFront = maxArrayLengthFront;
+	exports.sharedStart = sharedStart;
 
 /***/ },
 /* 182 */
@@ -22584,6 +22645,10 @@
 	    },
 	    focus: function focus() {
 	        this._input.focus();
+	    },
+	    setCursorEnd: function setCursorEnd() {
+	        var value = this._input.value;
+	        this._input.selectionStart = value.length;
 	    },
 	    render: function render() {
 	        var that = this;

@@ -65,6 +65,10 @@ var TerminalInput = React.createClass({
     focus: function() {
         this._input.focus();
     },
+    setCursorEnd: function() {
+        var value = this._input.value;
+        this._input.selectionStart = value.length;
+    },
     render: function() {
         var that = this;
 
