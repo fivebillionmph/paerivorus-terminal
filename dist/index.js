@@ -57,7 +57,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	exports.default = _terminal2.default;
+	//export default Terminal;
 	exports.Terminal = _terminal2.default;
 
 /***/ },
