@@ -1,15 +1,12 @@
 var webpack = require("webpack");
 var path = require("path");
 
-var APP_DIR = __dirname + "/examples/src";
-var BUILD_DIR = __dirname + "/examples/static/js";
-
 var config = {
     entry: {
-        example1: APP_DIR + "/example1.jsx"
+        main: __dirname + "/index.js"
     },
     output: {
-        path: BUILD_DIR,
+        path: __dirname,
         filename: "[name].bundle.js",
         chunkFilename: "[id].bundle.js"
     },
