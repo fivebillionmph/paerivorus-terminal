@@ -3,12 +3,15 @@ var path = require("path");
 
 var config = {
     entry: {
-        index: __dirname + "/index.js"
+        index: path.join(__dirname, "index.js")
     },
     output: {
-        path: __dirname,
-        filename: "[name].bundle.js",
+        path: path.join(__dirname, "dist"),
+        filename: "[name].js",
         chunkFilename: "[id].bundle.js"
+    },
+    externals: {
+        "react": "var React"
     },
     module: {
         loaders: [
