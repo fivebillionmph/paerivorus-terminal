@@ -10,9 +10,6 @@ var config = {
         filename: "[name].js",
         chunkFilename: "[id].bundle.js"
     },
-    externals: {
-        "react": "var React"
-    },
     module: {
         loaders: [
             {
