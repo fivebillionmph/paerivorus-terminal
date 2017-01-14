@@ -78,8 +78,8 @@ var Terminal = React.createClass({
         this.setState(newState);
 
         /* send notification to prop function */
-        if(typeof this.props.commandFun === "function") {
-            this.props.commandFun(originalValue);
+        if(typeof this.props.onCommand === "function") {
+            this.props.onCommand(originalValue);
         }
     },
     _handleKeyArrow: function(e) {
