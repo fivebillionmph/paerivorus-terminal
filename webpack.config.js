@@ -8,7 +8,9 @@ var config = {
     output: {
         path: path.join(__dirname, "dist"),
         filename: "[name].js",
-        chunkFilename: "[id].bundle.js"
+        chunkFilename: "[id].bundle.js",
+        libraryTarget: "umd",
+        library: "paerivorus-terminal"
     },
     module: {
         loaders: [

@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["paerivorus-terminal"] = factory();
+	else
+		root["paerivorus-terminal"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -47,8 +57,9 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
+	exports.Terminal = undefined;
 
 	var _terminal = __webpack_require__(1);
 
@@ -57,9 +68,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _terminal2.default;
-	//export {
-	//    Terminal
-	//};
+	exports.Terminal = _terminal2.default;
 
 /***/ },
 /* 1 */
@@ -4421,11 +4430,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	function userStyle(style, userStyle) {
-	    if (!userStyle) return style;
+	function userStyle(style, userStyles) {
+	    if (!userStyles) return style;
 	    for (var prop in style) {
-	        if (userStyle.hasOwnProperty(prop)) {
-	            style[prop] = userStyle[prop];
+	        if (userStyles.hasOwnProperty(prop)) {
+	            style[prop] = userStyles[prop];
 	        }
 	    }
 	    return style;
@@ -4692,4 +4701,6 @@
 	exports.default = TerminalInput;
 
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;
