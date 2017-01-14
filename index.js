@@ -1,6 +1,6 @@
 import Terminal from "./src/terminal.jsx";
 
-//export default Terminal;
-export {
-    Terminal
-};
+export default Terminal;
+//export {
+//    Terminal
+//};

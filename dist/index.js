@@ -47,9 +47,8 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
-	exports.Terminal = undefined;
 
 	var _terminal = __webpack_require__(1);
 
@@ -57,8 +56,10 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	//export default Terminal;
-	exports.Terminal = _terminal2.default;
+	exports.default = _terminal2.default;
+	//export {
+	//    Terminal
+	//};
 
 /***/ },
 /* 1 */
