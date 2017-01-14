@@ -3,7 +3,7 @@ var path = require("path");
 
 var config = {
     entry: {
-        main: __dirname + "/index.js"
+        index: __dirname + "/index.js"
     },
     output: {
         path: __dirname,

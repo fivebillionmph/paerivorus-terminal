@@ -2,7 +2,7 @@
   "name": "paerivorus-terminal",
   "version": "1.0.1",
   "description": "Another react terminal component",
-  "main": "index.js",
+  "main": "index.bundle.js",
   "dependencies": {
     "babel-loader": "^6.2.10",
     "babel-preset-es2015": "^6.18.0",
