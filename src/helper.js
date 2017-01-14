@@ -1,8 +1,8 @@
-function userStyle(style, userStyle) {
-    if(!userStyle) return style;
+function userStyle(style, userStyles) {
+    if(!userStyles) return style;
     for(var prop in style) {
-        if(userStyle.hasOwnProperty(prop)) {
-            style[prop] = userStyle[prop];
+        if(userStyles.hasOwnProperty(prop)) {
+            style[prop] = userStyles[prop];
         }
     }
     return style;
