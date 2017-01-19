@@ -47,8 +47,11 @@ var Terminal = React.createClass({
         var originalValue = value;
 
         /* check if needs to clear */
+        var cleared = false;
         if(originalValue === this.props.clearString) {
             newState.textLines = [];
+            this._input.clearValue();
+            cleared = true;
         } else {
             /* add the ps1 */
             if(this.props.ps1) {
@@ -78,7 +81,7 @@ var Terminal = React.createClass({
         this.setState(newState);
 
         /* send notification to prop function */
-        if(typeof this.props.onCommand === "function") {
+        if(typeof this.props.onCommand === "function" && !cleared) {
             this.props.onCommand(originalValue);
         }
     },
