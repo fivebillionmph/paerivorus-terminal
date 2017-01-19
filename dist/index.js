@@ -4693,7 +4693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            null,
 	            _react2.default.createElement("input", { onSelect: this._onSelect, value: this.state.value, onChange: this._onChange, style: style.input, ref: function ref(el) {
 	                    that._input = el;
-	                }, autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false" })
+	                }, autoComplete: "off", autoCorrect: "off", autoCapitalize: "off", spellCheck: "false" })
 	        );
 	    }
 	});
