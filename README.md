@@ -9,3 +9,6 @@ Another react terminal component
 * ps1 - (default: undefined) the prompt string
 * onCommand - (default: undefined) a function that runs when ever the users submits a line.  It is passed a single argument: the string that the user entered
 * tabComplete - (default: undefined) an array of strings that will the terminal will tab complete to
+
+### Functions
+* addLine(line) - adds a single line to the terminal
