@@ -1,6 +1,6 @@
 {
   "name": "paerivorus-terminal",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Another react terminal component",
   "main": "./dist/index.js",
   "dependencies": {
