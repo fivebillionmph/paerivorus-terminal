@@ -90,7 +90,7 @@ var TerminalInput = React.createClass({
 
         return (
             <span>
-                <input onSelect={this._onSelect} value={this.state.value} onChange={this._onChange} style={style.input} ref={function(el) { that._input = el; }} />
+                <input onSelect={this._onSelect} value={this.state.value} onChange={this._onChange} style={style.input} ref={function(el) { that._input = el; }} autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
             </span>
         );
     }
